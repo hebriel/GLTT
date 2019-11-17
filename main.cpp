@@ -49,6 +49,9 @@ namespace mc
 				0, 1, 2
 		};
 
+		dcainit.attributes.push_back({2, gl::DataType::kFloat}); //Position
+		dcainit.attributes.push_back({3, gl::DataType::kFloat}); //Color
+
 		dcainit.program_name = "ShaderDefaultColor2D";
 
 		auto shader = registry.create();
@@ -59,6 +62,8 @@ namespace mc
 		spi.name = "ShaderDefaultColor2D";
 		spi.shaderPaths = {	{"../resources/shaders/ShaderDefaultColor2D.vert", gl::ShaderType::kVertexShader},
 					 		{"../resources/shaders/ShaderDefaultColor2D.frag", gl::ShaderType::kFragmentShader}};
+
+
 
 	}
 

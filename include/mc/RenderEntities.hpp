@@ -4,6 +4,7 @@
 #include <GL.hpp>
 #include <oglwrap/oglwrap.h>
 #include <glm/glm.hpp>
+#include <queue>
 
 namespace mc
 {
@@ -18,10 +19,18 @@ namespace mc
 		std::vector<std::pair<std::string, gl::ShaderType>> shaderPaths;
 	};
 
+	//NOT A COMPONENT
+	struct PAttribute
+	{
+		unsigned int dimension;
+		gl::DataType type = gl::DataType::kFloat;
+	};
+
 	struct DrawCallActorInit
 	{
 		std::vector<float> data;
 		std::vector<unsigned int> indices;
+		std::deque<PAttribute> attributes;
 		gl::BufferUsage usage;
 		std::string program_name;
 	};

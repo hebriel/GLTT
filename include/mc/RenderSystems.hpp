@@ -17,8 +17,8 @@ namespace mc
 			gameRegistry = &regView.get(entity);
 
 		for (auto entity : view) {
-			auto &dca = view.get<DrawCallActor>(entity);
-			auto &dcinit = view.get<DrawCallActorInit>(entity);
+			DrawCallActor &dca = view.get<DrawCallActor>(entity);
+			DrawCallActorInit &dcinit = view.get<DrawCallActorInit>(entity);
 
 			dca.program = gameRegistry->programRefs[dcinit.program_name];
 
@@ -30,12 +30,38 @@ namespace mc
 			dca.vbo.data(dcinit.data, dcinit.usage);
 			dca.ebo.data(dcinit.indices, dcinit.usage);
 
+			unsigned int cumulatedSize{0};
+			unsigned int index = 0;
+			unsigned int stride{0};
+
+			for (const auto& attrib : dcinit.attributes)
+			{
+				//todo: add sizeof(...) for types other than float
+				stride += attrib.dimension * sizeof(float);
+			}
+
+			while(!dcinit.attributes.empty())
+			{
+				gl::VertexAttrib glAttrib(index++);
+				PAttribute& attrib = dcinit.attributes.front();
+
+				glAttrib.pointer(attrib.dimension, attrib.type, false, stride, (void*)cumulatedSize);
+
+				//todo: add sizeof(...) for types other than float
+				cumulatedSize += attrib.dimension * sizeof(float);
+
+				glAttrib.enable();
+				dcinit.attributes.pop_front();
+			}
+
+			/*
 			gl::VertexAttrib positions(0);
 			positions.pointer(2, gl::DataType::kFloat, false, 5 * sizeof(float), 0);
 			positions.enable();
 			gl::VertexAttrib colors(1);
 			colors.pointer(3, gl::DataType::kFloat, false, 5 * sizeof(float), (void *) sizeof(glm::vec2));
 			colors.enable();
+			*/
 
 			dca.vertexCount = dcinit.indices.size();
 
