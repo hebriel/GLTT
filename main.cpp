@@ -68,7 +68,7 @@ namespace mc
 	void post_init(entt::registry& registry)
 	{
 		gl::ClearColor(0.f, 0.5f, 1.f, 1.f);
-		//gl::Enable(gl::Capability::kDepthTest);
+		gl::Enable(gl::Capability::kDepthTest);
 	}
 
 
