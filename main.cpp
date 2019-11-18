@@ -28,7 +28,7 @@ namespace mc
 		glewInit();
 
 		registry.assign<Window>(eWindow, std::move(w));
-		registry.assign<GameRegistry>(eWindow);
+		registry.assign<RendererRegistry>(eWindow);
 	}
 
 	void init(entt::registry& registry)
@@ -63,13 +63,12 @@ namespace mc
 		spi.shaderPaths = {	{"../resources/shaders/ShaderDefaultColor2D.vert", gl::ShaderType::kVertexShader},
 					 		{"../resources/shaders/ShaderDefaultColor2D.frag", gl::ShaderType::kFragmentShader}};
 
-
-
 	}
 
 	void post_init(entt::registry& registry)
 	{
 		gl::ClearColor(0.f, 0.5f, 1.f, 1.f);
+		//gl::Enable(gl::Capability::kDepthTest);
 	}
 
 

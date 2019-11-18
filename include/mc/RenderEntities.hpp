@@ -5,6 +5,7 @@
 #include <oglwrap/oglwrap.h>
 #include <glm/glm.hpp>
 #include <queue>
+#include <unordered_map>
 
 namespace mc
 {
@@ -43,5 +44,10 @@ namespace mc
 		ShaderProgram* program;
 
 		unsigned int vertexCount;
+	};
+
+	struct RendererRegistry
+	{
+		std::unordered_map<std::string, ShaderProgram*> programRefs;
 	};
 }

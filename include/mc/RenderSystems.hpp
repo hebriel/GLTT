@@ -9,9 +9,9 @@ namespace mc
 	void sLoadDCActors(entt::registry &registry)
 	{
 		auto view = registry.view<DrawCallActor, DrawCallActorInit>();
-		auto regView = registry.view<GameRegistry>();
+		auto regView = registry.view<RendererRegistry>();
 
-		GameRegistry *gameRegistry = nullptr;
+		RendererRegistry *gameRegistry = nullptr;
 
 		for (auto entity : regView)
 			gameRegistry = &regView.get(entity);
@@ -30,7 +30,7 @@ namespace mc
 			dca.vbo.data(dcinit.data, dcinit.usage);
 			dca.ebo.data(dcinit.indices, dcinit.usage);
 
-			unsigned int cumulatedSize{0};
+			unsigned int offsetPointer{0};
 			unsigned int index = 0;
 			unsigned int stride{0};
 
@@ -45,23 +45,16 @@ namespace mc
 				gl::VertexAttrib glAttrib(index++);
 				PAttribute& attrib = dcinit.attributes.front();
 
-				glAttrib.pointer(attrib.dimension, attrib.type, false, stride, (void*)cumulatedSize);
+				//reinterpret_cast<> is used to avoid compiler warnings, static_cast would work but C++ doesn't really like
+				//casting from object data to pointer data
+				glAttrib.pointer(attrib.dimension, attrib.type, false, stride, reinterpret_cast<void*&>(offsetPointer));
 
 				//todo: add sizeof(...) for types other than float
-				cumulatedSize += attrib.dimension * sizeof(float);
+				offsetPointer += attrib.dimension * sizeof(float);
 
 				glAttrib.enable();
 				dcinit.attributes.pop_front();
 			}
-
-			/*
-			gl::VertexAttrib positions(0);
-			positions.pointer(2, gl::DataType::kFloat, false, 5 * sizeof(float), 0);
-			positions.enable();
-			gl::VertexAttrib colors(1);
-			colors.pointer(3, gl::DataType::kFloat, false, 5 * sizeof(float), (void *) sizeof(glm::vec2));
-			colors.enable();
-			*/
 
 			dca.vertexCount = dcinit.indices.size();
 
@@ -88,9 +81,9 @@ namespace mc
 	void sLoadShaderPrograms(entt::registry &registry)
 	{
 		auto view = registry.view<ShaderProgramInit, ShaderProgram>();
-		auto regView = registry.view<GameRegistry>();
+		auto regView = registry.view<RendererRegistry>();
 
-		GameRegistry *gameRegistry = nullptr;
+		RendererRegistry *gameRegistry = nullptr;
 
 		for (auto entity : regView)
 			gameRegistry = &regView.get(entity);
